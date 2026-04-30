@@ -178,7 +178,7 @@ class Utils:
         if classifications:
             c = classifications[0]
             cv2.putText(img, f"Class: {c['label']} ({c['confidence']:.2f})", 
-                       (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255,255,0), 2)
+                       (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (187,208,219), 2)
         cv2.imwrite(output_path, cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
 
 # ============ HTML TEMPLATE ============
