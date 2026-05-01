@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>THYROX Patient View</title>
+    <style>
+        :root {
+            --bg: #f4f8fb;
+            --card: #ffffff;
+            --text: #18324a;
+            --muted: #5f7285;
+            --line: #dbe6ef;
+            --brand: #2f6fed;
+            --brand-dark: #1f57c7;
+            --ok-bg: #e8f7ee;
+            --ok-text: #17603a;
+            --mid-bg: #fff4df;
+            --mid-text: #9a6700;
+            --high-bg: #fde9e7;
+            --high-text: #b42318;
+            --shadow: 0 8px 24px rgba(16, 24, 40, 0.08);
+            --radius: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(180deg, #eef5fb 0%, #f8fbfd 100%);
+            color: var(--text);
+        }
+
+        .page {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 24px 18px 60px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #e8f1ff 0%, #f8fbff 100%);
+            border: 1px solid #d7e5ff;
+            border-radius: 28px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 8px 12px;
+            background: #dfeaff;
+            color: #1849a9;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: 34px;
+            line-height: 1.15;
+        }
+
+        .subtext {
+            margin: 0;
+            max-width: 700px;
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .upload-card,
+        .result-card,
+        .details-card,
+        .info-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .upload-card {
+            margin-top: 22px;
+            padding: 22px;
+        }
+
+        .upload-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .file-input {
+            flex: 1 1 320px;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: #fbfdff;
+        }
+
+        .btn {
+            border: none;
+            background: var(--brand);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--brand-dark);
+        }
+
+        .helper {
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .error {
+            margin-top: 18px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: #fdeceb;
+            color: #b42318;
+            border: 1px solid #f4c7c3;
+        }
+
+        .section {
+            margin-top: 24px;
+        }
+
+        .result-card {
+            padding: 26px;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .result-title {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        .result-summary {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.6;
+            max-width: 700px;
+        }
+
+        .risk-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            padding: 12px 16px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .risk-low {
+            background: var(--ok-bg);
+            color: var(--ok-text);
+        }
+
+        .risk-intermediate {
+            background: var(--mid-bg);
+            color: var(--mid-text);
+        }
+
+        .risk-high {
+            background: var(--high-bg);
+            color: var(--high-text);
+        }
+
+        .risk-unknown {
+            background: #eef2f6;
+            color: #425466;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 22px;
+        }
+
+        .summary-box {
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: #fbfdff;
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .summary-note {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .explain {
+            margin-top: 22px;
+            padding: 18px;
+            border-radius: 16px;
+            background: #f8fbff;
+            border: 1px solid #dce9f8;
+        }
+
+        .explain h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+        }
+
+        .explain p {
+            margin: 0;
+            line-height: 1.7;
+            color: #425466;
+        }
+
+        .jump-link {
+            display: inline-block;
+            margin-top: 16px;
+            color: var(--brand);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .jump-link:hover {
+            text-decoration: underline;
+        }
+
+        .details-card {
+            padding: 24px;
+        }
+
+        .details-title {
+            margin: 0 0 8px;
+            font-size: 24px;
+        }
+
+        .details-subtitle {
+            margin: 0 0 20px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .detail-item {
+            padding: 16px;
+            border-radius: 16px;
+            background: #fbfdff;
+            border: 1px solid var(--line);
+        }
+
+        .detail-item h4 {
+            margin: 0 0 8px;
+            font-size: 15px;
+        }
+
+        .detail-item p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .info-card {
+            margin-top: 20px;
+            padding: 20px;
+        }
+
+        .info-card h3 {
+            margin: 0 0 10px;
+        }
+
+        .info-card p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .small-meta {
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .mono {
+            font-family: Consolas, monospace;
+            word-break: break-word;
+        }
+
+        @media (max-width: 760px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .result-title {
+                font-size: 24px;
+            }
+
+            .summary-grid,
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page {
+                padding: 16px 14px 50px;
+            }
+
+            .hero,
+            .upload-card,
+            .result-card,
+            .details-card,
+            .info-card {
+                border-radius: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <section class="hero">
+            <div class="hero-top">
+                <div>
+                    <div class="eyebrow">Patient-friendly thyroid report</div>
+                    <h1>Understand your ultrasound result more clearly</h1>
+                    <p class="subtext">
+                        This page gives a simple explanation first, then shows the more technical details lower down.
+                        It is designed to be easier for patients to read and understand.
+                    </p>
+                </div>
+            </div>
+
+            <div class="upload-card">
+                <form action="/predict" method="post" enctype="multipart/form-data">
+                    <div class="upload-row">
+                        <input class="file-input" type="file" name="file" accept=".png,.jpg,.jpeg,.bmp" required>
+                        <button class="btn" type="submit">Upload image</button>
+                    </div>
+                    <div class="helper">
+                        Supported files: PNG, JPG, JPEG, BMP. Please upload one thyroid ultrasound image.
+                    </div>
+                </form>
+
+                {% if error %}
+                    <div class="error">{{ error }}</div>
+                {% endif %}
+            </div>
+        </section>
+
+        {% if success %}
+        <section class="section">
+            <div class="result-card">
+                <div class="result-header">
+                    <div>
+                        <h2 class="result-title">Your result at a glance</h2>
+                        <p class="result-summary">
+                            This tool reviewed the uploaded ultrasound image and estimated how concerning the finding may be.
+                            The summary below is meant to be easy to read before you look at the technical details.
+                        </p>
+                    </div>
+
+                    {% if risk_level == 'Low' %}
+                        <div class="risk-pill risk-low">Low risk</div>
+                    {% elif risk_level == 'Intermediate' %}
+                        <div class="risk-pill risk-intermediate">Intermediate risk</div>
+                    {% elif risk_level == 'High' %}
+                        <div class="risk-pill risk-high">High risk</div>
+                    {% else %}
+                        <div class="risk-pill risk-unknown">Result unavailable</div>
+                    {% endif %}
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-label">Main result</div>
+                        <div class="summary-value">{{ predicted_label }}</div>
+                        <div class="summary-note">
+                            This is the model's current classification from the image.
+                        </div>
+                    </div>
+
+                    <div class="summary-box">
+                        <div class="summary-label">Risk score</div>
+                        <div class="summary-value">{{ risk_score if risk_score is not none else '—' }}</div>
+                        <div class="summary-note">
+                            A higher score means the image has more features linked with concern.
+                        </div>
+                    </div>
+
+                    <div class="summary-box">
+                        <div class="summary-label">Uploaded file</div>
+                        <div class="summary-value" style="font-size:18px;">{{ filename }}</div>
+                        <div class="summary-note">
+                            This helps confirm which image was reviewed.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="explain">
+                    <h3>What this means</h3>
+                    <p>
+                        {% if risk_level == 'Low' %}
+                            The image currently looks less concerning based on the features this prototype checks.
+                            That does not replace a doctor's interpretation, but it may be reassuring at first glance.
+                        {% elif risk_level == 'Intermediate' %}
+                            The image shows some features that may need closer attention.
+                            It is best viewed as a prompt for medical review rather than a final diagnosis.
+                        {% elif risk_level == 'High' %}
+                            The image shows more features that this prototype marks as concerning.
+                            This should be reviewed by a qualified clinician, because this tool does not make a diagnosis on its own.
+                        {% else %}
+                            The system could not create a clear risk summary from this upload.
+                        {% endif %}
+                    </p>
+                </div>
+
+                <a class="jump-link" href="#details">See key details below</a>
+            </div>
+        </section>
+
+        <section class="section" id="details">
+            <div class="details-card">
+                <h2 class="details-title">Key details</h2>
+                <p class="details-subtitle">
+                    This section includes the technical information used by the prototype so it stays available,
+                    but it is placed lower on the page to reduce clutter at first glance.
+                </p>
+
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <h4>Prediction label</h4>
+                        <p>{{ predicted_label }}</p>
+                    </div>
+
+                    <div class="detail-item">
+                        <h4>Predicted class index</h4>
+                        <p>{{ predicted_class }}</p>
+                    </div>
+
+                    <div class="detail-item">
+                        <h4>Class probabilities</h4>
+                        <p class="mono">{{ class_probs }}</p>
+                    </div>
+
+                    <div class="detail-item">
+                        <h4>Mask generated</h4>
+                        <p>{{ has_mask }}</p>
+                    </div>
+
+                    <div class="detail-item">
+                        <h4>Detections found</h4>
+                        <p>{{ has_detections }}</p>
+                    </div>
+
+                    <div class="detail-item">
+                        <h4>Risk level</h4>
+                        <p>{{ risk_level }}</p>
+                    </div>
+
+                    {% if risk_features %}
+                    <div class="detail-item">
+                        <h4>Taller than wide</h4>
+                        <p>{{ risk_features.taller_than_wide }}</p>
+                    </div>
+
+                    <div class="detail-item">
+                        <h4>Irregular margin</h4>
+                        <p>{{ risk_features.irregular_margin }}</p>
+                    </div>
+
+                    <div class="detail-item">
+                        <h4>Estimated width</h4>
+                        <p>{{ risk_features.width }}</p>
+                    </div>
+
+                    <div class="detail-item">
+                        <h4>Estimated height</h4>
+                        <p>{{ risk_features.height }}</p>
+                    </div>
+
+                    <div class="detail-item">
+                        <h4>Estimated area</h4>
+                        <p>{{ risk_features.area }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="small-meta">
+                    This page is a prototype interface and is intended to explain results more clearly for patients.
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>Important note</h3>
+                <p>
+                    This result is a software estimate based on the uploaded image. It should support understanding,
+                    but it should not be used as a final medical diagnosis or a substitute for a clinician's judgment.
+                </p>
+            </div>
+        </section>
+        {% endif %}
+    </div>
+</body>
+</html>

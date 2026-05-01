@@ -1,16 +1,33 @@
-# THYROX - Thyroid Detection, Classification and Lymph Detection
+# THYROX Prototype
 
-## Overview
-THYROX is an AI-based system for automatically detecting thyroid nodules and suspicious lymph nodes from ultrasound images, classifying nodules as benign or malignant, and providing risk scores to assist radiologists.
+A complete prototype for thyroid ultrasound image upload and inference with modular code.
 
-## Tech Stack
-- **Python** - Core implementation language
-- **PyTorch** - Deep learning framework for CNN models
-- **YOLOv5** - Object detection for nodule/lymph node localization
-- **ResNet-50** - Transfer learning for benign/malignant classification
-- **XGBoost** - Ensemble classifier for final prediction
-- **OpenCV** - Image preprocessing and visualization
-- **scikit-image** - Geometric feature extraction
-- **Flask** - Web API for deployment
+## Features
+- Upload ultrasound image from browser
+- Preprocess image
+- Optional nodule segmentation
+- Optional nodule detection
+- Nodule classification
+- Minimal prototype UI
 
 ## Project Structure
+- `app.py` - Flask app for upload and inference
+- `src/utils.py` - helper utilities
+- `src/data.py` - preprocessing and dataset utilities
+- `src/metrics.py` - segmentation/classification metrics
+- `src/segmentation.py` - segmentation model and inference
+- `src/detection.py` - detection model and inference
+- `src/classification.py` - classifier and ROI cropping
+- `src/pipeline.py` - full inference pipeline
+- `templates/index.html` - minimal upload page
+
+## Run
+```bash
+pip install -r requirements.txt
+python app.py
+```
+
+Open: http://127.0.0.1:5000
+
+## Important
+This is a prototype. Without trained checkpoints, predictions are only structural/demo outputs.
